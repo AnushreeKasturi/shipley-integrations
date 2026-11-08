@@ -6,11 +6,12 @@ regex and then printed, unconditionally, "No Signed-off-by line." For a commit w
 that is true and useful. For a commit with a sign-off that is merely misformatted it is a
 falsehood, and it sends the contributor away to fix something they already did.
 
-That is not hypothetical. PR #15, 2026-10-18, @Sanika-M-Rangayyan, a correct one-word fix of
+That is not hypothetical. PR #15, 2026-10-18, a first-time contributor's correct one-word fix of
 seed 5, byte-identical to the #16 that was later merged and credited. They signed off, in the
-right box, with their real name and address:
+right box, with their real name and address, in this shape (name and address
+replaced here with made-up ones):
 
-    Signed-off-by: Sanika Rangayyan (sanika.rangayyan@gmail.com)
+    Signed-off-by: Ada Example (ada@example.com)
 
 Round brackets instead of angle brackets. Two characters. The check went red fourteen seconds
 after they opened the pull request, told them they had not signed off at all, and they closed
@@ -188,9 +189,10 @@ CASES = [
     ("t\n\nsigned-off-by: A Name <a@b.com>", True, None),
     ("t\n\nSigned-off-by:   A Name   <a@b.com>   ", True, None),
     ("t\n\nSigned-off-by: A Name <a@b.com>\nSigned-off-by: B <c@d.io>", True, None),
-    # The real PR #15 message. This is the regression test for the whole file.
+    # The real PR #15 message, with the contributor's name and address replaced by
+    # made-up ones of the same shape. This is the regression test for the whole file.
     ("Fixed spelling mistake in helloworld.html\n\n"
-     "Signed-off-by: Sanika Rangayyan (sanika.rangayyan@gmail.com)", False, "angle brackets"),
+     "Signed-off-by: Ada Example (ada@example.com)", False, "angle brackets"),
     ("t\n\nSigned-off-by: A Name [a@b.com]", False, "angle brackets"),
     ("t\n\nSigned-off-by: A Name a@b.com", False, "angle brackets"),
     ("t\n\nSigned-off-by: A Name <a@b.com", False, "angle bracket"),
