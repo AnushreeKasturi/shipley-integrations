@@ -38,10 +38,11 @@ Check three things, in this order:
 
 ### 2. Reply
 
-Say something, even one line. Three of the four merged contributions got no comment at all, and
-the one contributor we lost closed their own correct fix 35 minutes after a red check with
-nobody having spoken to them. A reply costs a minute and is the entire difference between a
-person who comes back and a person who does not.
+Say something, even one line. Of the eight relay fixes merged so far, five got no comment at
+all. Two correct fixes were lost outright to a red sign-off check with nobody having spoken to
+their authors: #12 was closed by its author 35 minutes after it was opened, and #15 under five
+minutes after. A reply costs a minute and is the entire difference between a person who comes
+back and a person who does not.
 
 ### 3. If the sign-off is missing
 
@@ -79,18 +80,28 @@ enforces most of it.
 **Nothing above this line is visible to the public until this step runs.** The page on the
 storefront is a copy; merging changes the repository, not the page.
 
+**This step writes to the live storefront, which takes real orders.** It is run only by the
+person who holds the storefront's credentials, from the farm's private project, which holds
+this repository as `shipley-integrations/` and the publisher under `launch-automation/`.
+Neither the publisher nor the credentials are in this repository. Always address the store by
+its primary host, `shipleyfarmsbeef.com`, over HTTPS. The `www` host and the old
+`*.v.frappe.cloud` host redirect, and a write sent through a redirect fails.
+
+From the root of that project:
+
 ```
 git -C shipley-integrations pull --ff-only origin main
 ```
 
-then, on the machine with the storefront credentials:
+then:
 
 ```
 PROD_CONFIRM=1 SITE_URL=https://shipleyfarmsbeef.com \
     python3 launch-automation/prod-queue/360_helloworld_page.py --apply
 ```
 
-Run it without the last flag first to see the plan. It is idempotent, it refuses to publish from
+Run it without `--apply` first to see the plan, and read the target site it prints before
+running it again with `--apply`. It is idempotent, it refuses to publish from
 a checkout that does not match `origin/main`, it checks every link on the page before writing,
 and it records an undo file so the previous page can be restored exactly.
 
@@ -104,7 +115,8 @@ the same stale file. That is precisely how this failed on 2026-10-03 and again o
 
 Not before. An issue that points at a page still serving the previous seed sends the next person
 to look for something that is not there — which is what happened to issue #11. Reuse the body of
-the most recent relay issue verbatim; it has been through four contributors and it works.
+the most recent relay issue (#20 at the last review). The body has been revised along the way,
+so copy the newest one rather than an older one.
 
 Title: `Find and fix the deliberate typo on /helloworld`.
 Labels: `documentation`, `good first issue`.
@@ -116,7 +128,8 @@ the table is newest first — citing the pull request, not the issue.
 
 ## The two checks, and the difference between them
 
-- **`The typo relay still has a way in`** (in CI, on every push and pull request) reads the
+- **`The typo relay still has a way in`** (in CI, on every pull request and every push to
+  `main`) reads the
   repository file. It fails `main` when a seed has been fixed and not replaced, so the relay
   cannot quietly stop.
 - **`Live seed`** (its own workflow, on a schedule) fetches the published page and fails when the
@@ -134,11 +147,29 @@ false alarm: an unreachable storefront is reported as "could not verify" and pas
 
 1. Publish before opening the next task.
 2. Pull before publishing.
-3. Plant before the second publish — `plant_seed.py` refuses to plant while the retired seed is
-   still on the live page, which is the tool telling you step 6 has not happened yet.
+3. Plant before the second publish. `plant_seed.py` refuses to plant while the retired seed is
+   still in your local copy of `site/helloworld.html`, which usually means the fix has not been
+   merged or you have not pulled it. It reads the repository file only and cannot see the live
+   page; the `Live seed` check is the only thing that does.
 
 ## If you inherit this
 
 Read `site/SEEDED.md` first: it is the ledger, it explains where a seed is allowed to live, and
 it is what CI reads. Then `CONTRIBUTING.md` for what we ask of contributors, and
 `CODE_OF_CONDUCT.md` for how we behave when one of them is having a bad day.
+
+## History
+
+Superseded wording, kept so the record of what this runbook used to claim is not lost.
+
+- **Step 2, as written 2026-10-17:** "Three of the four merged contributions got no comment at
+  all, and the one contributor we lost closed their own correct fix 35 minutes after a red check
+  with nobody having spoken to them." Superseded 2026-11-08. Eight relay fixes have now merged
+  (#6, #8, #10, #13, #16, #18, #19, #21), and a second correct fix was lost the day after this
+  was written (#15, 2026-10-18), so "the one contributor" no longer holds.
+- **Step 7, as written 2026-10-17:** "Reuse the body of the most recent relay issue verbatim; it
+  has been through four contributors and it works." Superseded 2026-11-08. There have been
+  seven relay issues (#1, #7, #9, #11, #14, #17, #20) and their bodies are not all identical.
+- **Order that actually matters, item 3, as written 2026-10-17:** "`plant_seed.py` refuses to
+  plant while the retired seed is still on the live page." Corrected 2026-11-08. The tool reads
+  `site/helloworld.html` from the local checkout and makes no network request.

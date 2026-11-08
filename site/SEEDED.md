@@ -44,7 +44,7 @@ Newest first. Each row is a real merged pull request against a live page.
 
 | # | Misspelling | Found and fixed by | Merged |
 |---|---|---|---|
-| 8 | `pruduct` | @AnushreeKasturi | 2026-11-07 |
+| 8 | `pruduct` | @zheng-guannan577 | 2026-11-07 |
 | 7 | `instructurs` | @AnushreeKasturi | 2026-11-02 |
 | 6 | `resturant` | @Jah-yee | 2026-10-29 |
 | 5 | `photogrephy` | @Kira-Saints | 2026-10-18 |
@@ -52,6 +52,11 @@ Newest first. Each row is a real merged pull request against a live page.
 | 3 | `buisness` | @O1sumitkumar | 2026-10-06 |
 | 2 | `catagory` | @aipd506 | 2026-10-02 |
 | 1 | `recieve` | @Jah-yee | 2026-09-30 |
+
+Correction, 2026-11-08: row 8 was first written crediting @AnushreeKasturi, who fixed seed 7.
+Seed 8 was fixed by @zheng-guannan577 in
+[#21](https://github.com/HealthyMeats/shipley-integrations/pull/21), as the commit that planted
+seed 9 and `CONTRIBUTORS.md` both say. The row now names them.
 
 ## For maintainers
 
@@ -66,11 +71,14 @@ python3 tools/plant_seed.py --credit @their-handle --fixed recieve \
 
 That rewrites the page, updates the block above, moves the fixed seed into the chain, and prints
 the publish command. Then run the publisher so the live page matches the repository, because a
-merged fix that is never published makes a liar out of the page.
+merged fix that is never published makes a liar out of the page. The publisher is not in this
+repository and it writes to the live storefront, so only the person holding the storefront's
+credentials runs it, plan first and `--apply` second. Step 6 of
+[`docs/MAINTAINING.md`](../docs/MAINTAINING.md) has the exact commands.
 
 `tools/validate_live_seed.py` checks that last step actually happened. It fetches the published
 page and fails if the page does not carry the seed named above; `.github/workflows/live-seed.yml`
-runs it hourly. `validate_seed.py --require-live` cannot do this, because it reads the
+is scheduled to run it hourly, and in practice GitHub runs it every few hours. `validate_seed.py --require-live` cannot do this, because it reads the
 repository file and never the network. That gap is not hypothetical: seed 2 stayed on the live
 page for a day after it was fixed and credited, and seed 3 for six days, with a green build the
 whole time.

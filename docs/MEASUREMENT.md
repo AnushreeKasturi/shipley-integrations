@@ -49,8 +49,9 @@ excludes most non-human traffic. Three practical consequences:
 - Agent interest shows up instead as requests for `/files/catalog.json`, which is a static file
   and leaves no analytics trace at all. Reading those counts requires the hosting provider's
   request log rather than Google Analytics.
-- `AGENTS.md` asks agents to identify themselves in a `User-Agent` string, and the example
-  client does. That is the only clean way to tell a well-behaved agent from a browser in a
+- [`integrations/README.md`](../integrations/README.md) asks every integration to identify
+  itself in a `User-Agent` string, and the example client does. (An earlier version of this
+  note said `AGENTS.md` asks this; it does not.) That is the only clean way to tell a well-behaved agent from a browser in a
   server log, and it depends on cooperation, so treat any count as a floor.
 
 ## A caution about search
