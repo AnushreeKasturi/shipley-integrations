@@ -21,6 +21,9 @@ You cannot break the farm. That is by design, and it means you can experiment fr
   configuration**. If you are about to add one, stop.
 - Continuous integration runs with **no secrets** and no access to farm systems. It validates
   structure and runs offline tests. It cannot deploy, and it is not being given the ability to.
+  One scheduled workflow, `Live seed` (`.github/workflows/live-seed.yml`), does make a network
+  request: it reads the public `/helloworld` page, the same way a browser would, to check the
+  published page matches the repository. It reads and never writes.
 - Publishing a change to the live site is a **separate, deliberate act** performed by a team
   member from their own machine, using tooling that is not in this repository. That tooling
   checks the content before it writes anything and can reverse the change afterwards.

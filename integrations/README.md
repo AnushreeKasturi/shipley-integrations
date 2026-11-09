@@ -3,6 +3,9 @@
 One directory per integration. **You own yours.** Put your name in `integration.json`, keep
 your copyright, and change it without asking us.
 
+There are none yet: `_template/` is the only directory here, and the `square-catalog-sync`
+below is an illustration, not something that exists. The first one could be yours.
+
 ```
 integrations/
   square-catalog-sync/
@@ -17,8 +20,9 @@ integrations/
 cp -r integrations/_template integrations/my-integration
 ```
 
-Then edit `integration.json` and `README.md`, and open a pull request. CI validates the
-manifest, so you will know within a minute if something is missing.
+Then edit `integration.json` and `README.md`, and open a pull request. The copied manifest
+still says `"name": "_template"`, and CI fails until `name` matches your directory. CI
+validates the manifest, so you will know within a minute if something is missing.
 
 ## `integration.json`
 
@@ -38,7 +42,7 @@ manifest, so you will know within a minute if something is missing.
 |---|---|
 | `name` | Must match the directory name. Lowercase, hyphens |
 | `status` | `working`, `experimental`, or `unmaintained` |
-| `uses` | Which Shipley surfaces it touches. `catalog.json` today |
+| `uses` | Which Shipley surfaces it touches: `catalog.json`, `llms.txt`, `sitemap.xml`, or `partner-api` (for design work against the proposed API; it does not exist yet). Anything else fails CI |
 | `maintainer.contact` | How a user reaches you. An address or a profile URL |
 
 `status: unmaintained` is a respectable answer, not a failure. Setting it honestly is more

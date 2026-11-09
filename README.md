@@ -134,7 +134,8 @@ Nothing you do here can reach our live systems, which is deliberate and is expla
 
 Today there is one stable, public surface: a schema.org product feed at
 **<https://shipleyfarmsbeef.com/files/catalog.json>**. Every product, with SKU, name, URL,
-category, brand, description, image, and price. It is a static file, so reading it costs us
+category and brand, plus a description, image and price where the product has one.
+[`docs/API.md`](docs/API.md) says which fields can be missing. It is a static file, so reading it costs us
 nothing and you can poll it as often as you like.
 
 A scoped **partner API** for wholesale ordering (your prices, your orders, your invoices,

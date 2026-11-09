@@ -1,6 +1,6 @@
 # Shipley Farms public data
 
-Last reviewed 2026-09-28.
+Last reviewed 2026-11-08, against the published file as it stood that day.
 
 There is exactly one stable public surface today: a **read-only product catalog**. This document
 describes it honestly, including what it will not do for you.
@@ -52,11 +52,18 @@ It is a [schema.org](https://schema.org) `ItemList` of `Product` objects. Read
 | `url` | yes | Canonical product page. Absolute |
 | `category` | yes | For example `Dry-Aged Steaks`, `Ground Beef` |
 | `brand` | yes | Always Shipley Farms |
-| `description` | yes | |
-| `image` | yes | Absolute. Served at up to 768px; our uploader downscales |
-| `offers.price` | yes | USD. **Read the catch weight section below before you show this** |
+| `description` | no | Missing on a few items. Do not assume it is there |
+| `image` | no | Missing on many items, so plan a placeholder. Absolute when present. Served at up to 768px; our uploader downscales |
+| `offers` | no | Missing on variant templates, which cannot be bought as themselves. See below |
+| `offers.price` | when `offers` is present | USD. **Read the catch weight section below before you show this** |
 | `x_shipley_catch_weight` | no | Present and `true` on catch weight items |
-| `x_shipley_note` | no | Free text when an item needs a caveat |
+| `x_shipley_note` | no | Free text when an item needs a caveat. Today it marks variant templates |
+
+**Variant templates.** A few entries are a product group rather than a product: you choose a
+size or style on the product page, and the entry itself has no `offers`. They carry an
+`x_shipley_note` saying so. Skip them, or link to their `url`, rather than showing them without
+a price. `x_shipley_provenance.product_groups_not_directly_purchasable` says how many there
+are.
 
 ### Catch weight: the one thing to get right
 
@@ -68,7 +75,10 @@ If you display our prices, say so. A menu board or storefront that shows `$60.30
 price for a catch weight item is showing your customer a number we cannot honour.
 
 ```python
-price = item["offers"]["price"]
+offer = item.get("offers")
+if not offer:
+    ...  # a variant template: no price of its own, link to item["url"]
+price = offer["price"]
 if item.get("x_shipley_catch_weight"):
     label = "about ${:.2f}".format(price)   # estimate, final charge is by actual weight
 else:
@@ -134,12 +144,27 @@ rather design this against a real integration than guess at one.
 
 | URL | What it is |
 |---|---|
-| `/llms.txt` | Site summary for AI assistants |
-| `/agents.md` | What we ask automated agents to do and not do |
+| `/files/sitemap-products.xml` | Every product page URL |
+| `/files/status.json` | Service status, as data |
+| `/llms.txt` | Site summary for AI assistants. Redirects to `/files/llms.txt` |
+| `/agents.md` | What we ask automated agents to do and not do. Redirects to `/files/agents.md` |
 | `/sitemap.xml` | Standard sitemap |
 | `/robots.txt` | Crawl rules. **Please honour them** |
+
+All of these live on `shipleyfarmsbeef.com`, over HTTPS. Use that host rather than `www.` or any
+older hostname you may find in a search result; those redirect, and some clients do not follow
+a redirect.
 
 ## Questions
 
 Open an issue, or use <https://shipleyfarmsbeef.com/helloworld?utm_source=github&utm_medium=repo&utm_campaign=shipley-integrations&utm_content=api-docs> if you would rather not use
 GitHub.
+
+## History
+
+- **Field table, as written 2026-09-28:** `description` and `image` were listed as always
+  present, `offers` was not listed, and `offers.price` was listed as always present. Corrected
+  2026-11-08 after reading the published catalog: of 280 products, 273 carried a
+  `description`, 156 an `image`, and 278 `offers`. The two without `offers` were variant
+  templates, each carrying an `x_shipley_note`. The 12-item fixture in `fixtures/` has every
+  field on every item, so code tested only against the fixture will not meet these gaps.

@@ -9,13 +9,20 @@ one customers buy beef from.
 | File | Live at |
 |---|---|
 | `helloworld.html` | <https://shipleyfarmsbeef.com/helloworld?utm_source=github&utm_medium=repo&utm_campaign=shipley-integrations&utm_content=site-readme> |
+| `directory.template.html` | <https://shipleyfarmsbeef.com/directory?utm_source=github&utm_medium=repo&utm_campaign=shipley-integrations&utm_content=site-readme> |
+
+`directory.template.html` is a template, not the finished page. Its words are yours to edit;
+the link lists are generated from the site's live route tables when it is published, at the
+`<!-- GENERATED_SECTIONS -->` placeholder, which must stay.
 
 ## How a change gets from here to the live site
 
 1. You edit the file and open a pull request.
 2. CI checks the markup is well formed and that nothing dangerous slipped in.
 3. A maintainer reviews it.
-4. On merge, an operator runs the publisher script against production.
+4. On merge, a member of the farm's team who holds the storefront's credentials runs the
+   publisher, which is not in this repository. It shows its plan first and writes only when
+   told to.
 5. It is live.
 
 Step 4 is a human on purpose. A member of our team reviews and publishes every change before
